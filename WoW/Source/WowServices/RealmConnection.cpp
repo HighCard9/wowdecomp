@@ -1,3 +1,4 @@
+#include "WoW/Source/WowServices/CharacterListTrace.h"
 #include "RealmConnection.h"
 #include "Engine/Source/BlizzardCore/Source/Packages/Util/SHA1.h"
 #include "Engine/Source/Os/TimeManager.h"
@@ -22,12 +23,14 @@ RealmConnection::REALMCONNECTIONNODE::REALMCONNECTIONNODE() {
 // VERIFY: ec31eb67 manual
 // OFFSET: 0x00464C10
 int32_t RealmConnection::HandleCharEnum(uint32_t msgId, uint32_t time, CDataStore* msg) {
+    CharacterListTrace("char-enum-enter", msgId, msg->m_size, msg->m_read, 0);
     if (this->m_realmResponse) {
         this->m_realmResponse->GameServerResult(this, "SMSG_CHAR_ENUM", nullptr, nullptr);
     }
 
     uint8_t count;
     msg->Get(count);
+    CharacterListTrace("char-enum-count", msgId, msg->m_size, msg->m_read, count);
 
     int32_t invalid = 0;
 
@@ -104,6 +107,7 @@ int32_t RealmConnection::HandleCharEnum(uint32_t msgId, uint32_t time, CDataStor
         this->m_characterList.Clear();
     }
 
+    CharacterListTrace("char-enum-parsed", msgId, msg->m_size, msg->m_read, success);
     this->m_realmResponse->CharacterListReceived(this, this->m_characterList, success);
 
     return 1;
@@ -399,6 +403,7 @@ void RealmConnection::HandleAuthChallenge(AuthenticationChallenge* challenge) {
 // VERIFY: 43999034 manual
 // OFFSET: 0x00464A40
 void RealmConnection::RequestCharacterEnum() {
+    CharacterListTrace("char-enum-request", CMSG_ENUM_CHARACTERS, 0, 0, 0);
     CDataStore msg;
     msg.Put(static_cast<uint32_t>(CMSG_ENUM_CHARACTERS));
     msg.Finalize();

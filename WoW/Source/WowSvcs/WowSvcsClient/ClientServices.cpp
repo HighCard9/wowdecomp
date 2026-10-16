@@ -1,3 +1,4 @@
+#include "WoW/Source/WowServices/CharacterListTrace.h"
 #include <cstdint>
 #include <cstring>
 #include "ClientServices.h"
@@ -1229,6 +1230,7 @@ void ClientConnection::HandleAuthResult(int32_t result) {
 // VERIFY: 0d280d76 manual
 // OFFSET: 0x006B14C0
 void ClientConnection::GetCharacterList() {
+    CharacterListTrace("get-character-list", 0, 0, 0, this->m_connected);
     this->Initiate(COP_GET_CHARACTERS, 43, nullptr);
 
     if (this->m_connected) {
@@ -1265,6 +1267,7 @@ void ClientRealmResponseAdapter::HandleAuthResponse(RealmConnection* connection,
 // VERIFY: d7b1f9d9 manual
 // OFFSET: 0x006B2000
 void ClientRealmResponseAdapter::CharacterListReceived(RealmConnection* connection, const TSFixedArray<CHARACTER_INFO>& characters, int32_t success) {
+    CharacterListTrace("character-list-complete", 0, characters.Count(), 0, success);
     ClientConnection* clientConnection = static_cast<ClientConnection*>(connection);
 
     if (success) {

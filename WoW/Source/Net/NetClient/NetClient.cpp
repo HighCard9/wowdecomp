@@ -1,3 +1,4 @@
+#include "WoW/Source/WowServices/CharacterListTrace.h"
 #include "NetClient.h"
 #include <cstdlib>
 #include <cstring>
@@ -85,6 +86,7 @@ void NetClient::WCMessageReady(WowConnection* connection, uint32_t timeStamp, CD
 
     uint16_t msgId;
     msg->Get(msgId);
+    CharacterListTrace("receive", msgId, msg->m_size, msg->m_read, this->m_suspended);
 
     switch (msgId) {
         case SMSG_CONNECT_TO:
@@ -276,6 +278,8 @@ int32_t NetClient::ProcessMessage(uint32_t timeReceived, CDataStore* msg, int32_
     uint16_t msgId;
     msg->Get(msgId);
     this->ValidateMessageId(msgId);
+    CharacterListTrace("dispatch", msgId, msg->m_size, msg->m_read,
+        msgId < NUM_MSG_TYPES && this->m_handlers[msgId] ? 1 : 0);
 
     if (msgId < NUM_MSG_TYPES && this->m_handlers[msgId]) {
         return this->m_handlers[msgId](this->m_handlerParams[msgId], static_cast<NETMESSAGE>(msgId), timeReceived, msg);
@@ -574,6 +578,7 @@ NetClient::NetClient() {
 // VERIFY: 3e4c9045 manual
 // OFFSET: 0x00632B50
 void NetClient::Send(CDataStore* msg) {
+    CharacterListTrace("send-enter", 0, msg->m_size, msg->m_read, this->m_netState);
     if (this->m_netState != NS_CONNECTED) {
         return;
     }
@@ -585,6 +590,7 @@ void NetClient::Send(CDataStore* msg) {
     }
 
     if (this->m_suspended) {
+        CharacterListTrace("send-held", 0, msg->m_size, msg->m_read, 1);
         NetClient::HELDMESSAGE* held = this->m_heldMessages.NewNode(2, 0, 0);
         uint32_t bytes = msg->m_size - msg->m_read;
         void* data;
@@ -594,7 +600,8 @@ void NetClient::Send(CDataStore* msg) {
         return;
     }
 
-    this->m_serverConnection->SendPacket(msg, 0);
+    const int32_t traceSendResult = this->m_serverConnection->SendPacket(msg, 0);
+    CharacterListTrace("send-result", 0, size, 0, traceSendResult);
     WowConnection* connection = this->m_serverConnection;
     s_stats[0] += size;
     s_stats[1]++;
