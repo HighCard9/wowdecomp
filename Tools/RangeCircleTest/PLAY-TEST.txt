@@ -1,0 +1,25 @@
+WoW 3.3.5a range-circle test
+
+Extract all artifact files into a separate test folder. Copy your own build
+12340 Data folder alongside WowRangeTest64.exe. Set the copied
+Data/<locale>/realmlist.wtf for your test server, then launch WowRangeTest64.exe.
+No compiler or Git installation is needed to play this downloaded build.
+
+The test draws 5-yard horizontal rings around nearby attackable NPCs:
+orange outside the distance, green inside. Test on flat ground first.
+These are distance guides, NOT exact melee/aggro/hitbox boundaries.
+
+Chat commands:
+/console mobRangeCircles 1
+/console mobRangeCircles 0
+/console mobRangeRadius 5
+/console mobRangeRadius 10
+/console mobRangeDistance 60
+
+Up to 32 NPCs within 60 yards by default. Radius clamps to 1-40 yards;
+drawing distance clamps to 5-100. Slopes, stairs, flying mobs and transports
+can cause floating or clipped rings. Server compatibility is unverified.
+
+This artifact compiling successfully does not mean it has been play-tested.
+Report screenshots or WowClient_crash.log if anything fails in-game.
+Close this test client and use your original client to revert.
