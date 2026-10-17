@@ -1,0 +1,32 @@
+ICC Navigator native preview - first integration test
+
+1. Extract the artifact into your separate test-client folder, beside Data.
+   Keep the supplied Interface/AddOns/ICCObserver folder structure.
+2. Copy data/mmaps from your EXISTING ICC Navigator package into this folder.
+   Data (game assets) and data/mmaps (navigation tiles) share a folder on Windows.
+   The GitHub navigator repository does not contain the map binaries.
+3. Launch WowICCObserver64.exe and enable ICC Observer in the AddOns list.
+4. On your own test server, enter ICC and type /iccpreview on.
+5. Target/pull Marrowgar manually. The preview collects 5 seconds of history.
+   Blue centre lines: estimated Coldflame history, not verified damage bounds.
+   Green line/yellow cross: proposed route/destination. A hold can show a cross.
+   Drag the status panel to move it. /iccpreview off disables the preview.
+   /console mobRangeCircles 0 hides the old distance circles.
+6. If maps were missing, copy them, then toggle the preview off and on to retry.
+
+No movement or spells are automated in this build. Fury combat comes later.
+The preview reuses icc-navigator 0.8.2 encounter planning and bundled Detour.
+Native CGUnit_C fields and aura functions replace external memory reads;
+the original input DLL and helper are neither loaded nor packaged.
+Planning runs on the render thread at most four times/second and has the
+upstream 60ms planning budget; some frame-time impact is possible.
+Only map 631 / NPC 36612 / Coldflame 36672 / Bone Storm aura 69076 are supported.
+Custom server IDs or different flame duration require changing the profile.
+The 5-second history and 4-yard avoidance margin are inherited estimates.
+Depth-tested guides float 0.15 yards above sampled coordinates; they do not
+conform to terrain. Missing observations hide routes; no claim of safety.
+
+Test normal phase, Bone Storm, death, Bone Spike, zoning and toggling off.
+If something is wrong, send Logs/ICCObserver.log and a screenshot of the panel.
+The log records status changes (bounded at 10,000 lines per enable session).
+Compilation and synthetic planner tests do not establish live playability.

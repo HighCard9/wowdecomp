@@ -1,3 +1,5 @@
+#include "MobRangeCircles.h"
+#include "IccObserver.h"
 #include "World.h"
 #include <cstdlib>
 #include <new>
@@ -1735,6 +1737,9 @@ void CWorld::Initialize() {
 
     World::s_m2Scene->SetProjectTextureCallback(World::ProjectTextureCallback, nullptr);
     World::s_m2Scene->SetProjectPositionCallback(World::ProjectPositionCallback, nullptr);
+
+    MobRangeCirclesInitialize();
+    IccObserverInitialize();
 
     ConsoleCommandRegister("showDetailDoodads", CWorld::ConsoleCommand_ShowDetailDoodads, CATEGORY_GRAPHICS, nullptr);
     ConsoleCommandRegister("maxLOD", CWorld::ConsoleCommand_MaxLOD, CATEGORY_GRAPHICS, nullptr);

@@ -1,3 +1,5 @@
+#include "MobRangeCircles.h"
+#include "IccObserver.h"
 #include <cfloat>
 #include "CWorldSceneRender.h"
 #include "WoW/Source/WorldClient/Map.h"
@@ -242,6 +244,9 @@ void CWorldScene::Render(const C3Vector& cameraPos, float time) {
     GxXformPop(GxXform_World);
     g_theGxDevicePtr->RsPop();
     CursorReleaseItemMips();
+
+    MobRangeCirclesRender();
+    IccObserverRender();
 
     if (CWorld::enables & 0x200000) {
         CWorldScene::RenderCollisionDebug();

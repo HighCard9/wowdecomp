@@ -1,0 +1,30 @@
+name: Build ICC observer test
+on:
+  push:
+    branches: [icc-observer-test]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-2022
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure Windows x64
+        run: cmake -S . -B build/icc-x64 -G "Visual Studio 17 2022" -A x64 -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DWOWCLIENT_OUTPUT_OVERRIDE=WowICCObserver64 -DWOWDECOMP_DISABLE_SIGNATURE_CHECKS=ON
+      - name: Compile
+        run: cmake --build build/icc-x64 --config Release --target WowClient --parallel 4
+      - name: Package preview panel and instructions
+        shell: pwsh
+        run: |
+          if (!(Test-Path bin/Win/WowICCObserver64.exe)) { throw 'Expected executable was not built' }
+          New-Item -ItemType Directory -Force bin/Win/Interface/AddOns | Out-Null
+          Copy-Item -Recurse Tools/IccObserver/ICCObserver bin/Win/Interface/AddOns/
+          Copy-Item Tools/IccObserver/PLAY-TEST.txt bin/Win/PLAY-TEST.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: WowICCObserver64
+          path: bin/Win/
+          if-no-files-found: error
+          retention-days: 14

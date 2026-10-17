@@ -1,0 +1,4 @@
+## Interface: 30300
+## Title: ICC Observer
+## Notes: Status panel for the native ICC navigation preview
+ICCObserver.lua

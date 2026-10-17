@@ -1267,7 +1267,7 @@ void ClientRealmResponseAdapter::HandleAuthResponse(RealmConnection* connection,
 // VERIFY: d7b1f9d9 manual
 // OFFSET: 0x006B2000
 void ClientRealmResponseAdapter::CharacterListReceived(RealmConnection* connection, const TSFixedArray<CHARACTER_INFO>& characters, int32_t success) {
-    CharacterListTrace("character-list-complete", 0, characters.Count(), 0, success);
+    CharacterListTrace("character-list-complete", 0, characters.m_count, 0, success);
     ClientConnection* clientConnection = static_cast<ClientConnection*>(connection);
 
     if (success) {

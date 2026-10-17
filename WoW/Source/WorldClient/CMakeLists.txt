@@ -8,3 +8,6 @@ target_include_directories(WorldClient
     PUBLIC
         ${CMAKE_SOURCE_DIR}
 )
+
+# ICC Navigator uses its bundled legacy Detour tile format.
+target_include_directories(WorldClient PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/IccNavigator/vendor/Detour/Include")
