@@ -37,7 +37,9 @@ Position PositionOf(const CGObject_C* unit) {
 void Status(const std::string& value) {
     if (value == lastStatus) return;
     lastStatus = value;
+    statusVar->SetReadOnly(false);
     statusVar->InternalSet(value.c_str(), true, false, false, false);
+    statusVar->SetReadOnly(true);
     if (trace && traceLines++ < 10000) {
         trace << GetTickCount64() << '\t' << value << '\n';
         trace.flush();
